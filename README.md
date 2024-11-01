@@ -1,2 +1,2 @@
-# chaltteogCare
-한이음으로 진행하던 프로젝트가 중간에 엎어져서 혼자 서버연동 한 프로젝트입니다.. 
+# chaltteogCare 
+mock 서버 연동해보기 
