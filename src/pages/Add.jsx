@@ -54,7 +54,7 @@ const Add = () => {
                             id="back"
                             src="/images/main/back.svg"
                             style={{ position: "relative", top: "10px", left: "10px" }}
-                            onClick={onClickMain}
+                            onClick={() => navigate(-1)} // 이전 페이지로 이동
                         />
                         <img
                             id="logo"
@@ -89,7 +89,7 @@ const Add = () => {
                             style={{ position: "relative", top: "148px", left: "20px" }}
                             id="phoneInput"
                             type="text"
-                            placeholder="010-XXXX-XXXX 형식으로 입력해주세요."
+                            placeholder="010XXXXXXXX 형식으로 입력해주세요."
                             value={phoneNumber} // 상태 연결
                             onChange={(e) => setPhoneNumber(e.target.value)} // 상태 업데이트
                         />         
