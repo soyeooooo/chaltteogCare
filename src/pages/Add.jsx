@@ -35,6 +35,12 @@ const Add = () => {
 
     const onClickMain = () => {
         if (foundPerson) {
+            // 기존의 피관리자 정보를 가져옴
+            const existingPeople = JSON.parse(localStorage.getItem('people')) || [];
+            // 새로운 피관리자 정보를 추가
+            existingPeople.push(foundPerson);
+            // localStorage에 저장
+            localStorage.setItem('people', JSON.stringify(existingPeople));
             navigate("/Main", { state: { person: foundPerson } }); // Main 컴포넌트에 상태 전달
         }
     };
@@ -66,7 +72,7 @@ const Add = () => {
                             style={{ position: "relative", top: "60px", left: "-59px" }}
                         />
         
-                        {/* 성함 */}
+                        {/* 성함 입력 */}
                         <img
                             src="/images/add/name.svg"
                             style={{ position: "relative", top: "112px", left: "-215px" }}
@@ -80,7 +86,7 @@ const Add = () => {
                             onChange={(e) => setName(e.target.value)} // 상태 업데이트
                         />           
         
-                         {/* 전화번호  */}
+                         {/* 전화번호 입력 */}
                         <img
                             src="/images/add/phone.svg"
                             style={{ position: "relative", top: "140px", left: "22px" }}
@@ -89,7 +95,7 @@ const Add = () => {
                             style={{ position: "relative", top: "148px", left: "20px" }}
                             id="phoneInput"
                             type="text"
-                            placeholder="010XXXXXXXX 형식으로 입력해주세요."
+                            placeholder="010-XXXXXXXX 형식으로 입력해주세요."
                             value={phoneNumber} // 상태 연결
                             onChange={(e) => setPhoneNumber(e.target.value)} // 상태 업데이트
                         />         
