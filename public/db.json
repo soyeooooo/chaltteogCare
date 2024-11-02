@@ -8,6 +8,44 @@
       "team": "수원"
     }
   ],
+  "people": [
+    {
+      "id": "1",
+      "name": "고길동",
+      "address": "경기도 구리시 XX동",
+      "electricUsage": 120,
+      "waterUsage": 90,
+      "healthStatus": "양호",
+      "phone": "01000000001"
+    },
+    {
+      "id": "2",
+      "name": "이길동",
+      "address": "경기도 구리시 YY동",
+      "electricUsage": 100,
+      "waterUsage": 80,
+      "healthStatus": "양호",
+      "phone": "01000000002"
+    },
+    {
+      "id": "3",
+      "name": "박길동",
+      "address": "경기도 구리시 ZZ동",
+      "electricUsage": 110,
+      "waterUsage": 70,
+      "healthStatus": "양호",
+      "phone": "01000000003"
+    },
+    {
+      "id": "4",
+      "name": "최길동",
+      "address": "경기도 구리시 AA동",
+      "electricUsage": 90,
+      "waterUsage": 60,
+      "healthStatus": "양호",
+      "phone": "01000000004"
+    }
+  ],
   "schedules": [
     {
       "id": "1",

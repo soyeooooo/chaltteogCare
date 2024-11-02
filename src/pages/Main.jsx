@@ -1,12 +1,23 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Mobile, PC } from "../styles/Global_d"; 
 import styled, { createGlobalStyle } from "styled-components";
 
 const Main = () => {
     const navigate = useNavigate();
-    
+    const location = useLocation();
+    const [person, setPerson] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const modalBackground = useRef();
+
+    useEffect(() => {
+        if (location.state) {
+            const { name, phoneNumber } = location.state;
+            setPerson({ name, phoneNumber });
+        }
+    }, [location.state]);
+
     const onClickSchedule = () => {
         navigate("/Schedule");
     };
@@ -20,12 +31,8 @@ const Main = () => {
         navigate("/Setting");
     };      
     const onClickAdd = () => {
-      navigate("/Add");
+        navigate("/Add");
     };
-
-    // 모달창 부분
-    const [modalOpen, setModalOpen] = useState(false);
-    const modalBackground = useRef();
 
     return (
         <motion.div
@@ -62,7 +69,7 @@ const Main = () => {
                             if (e.target === modalBackground.current) {
                                 setModalOpen(false);
                             }
-                            }}>
+                        }}>
                             <div className={'modal-content'}>
                                 <img
                                     src="/images/main/logout_img.svg"
@@ -73,7 +80,6 @@ const Main = () => {
                                     style={{ position: "relative", left: "-2px", top: "100px", width: "120px"}}
                                     className={'modal-close-btn'} onClick={() => setModalOpen(false)}
                                 />
-                                {/* 이 부분 클릭 시 token 값 없애주는 거 잊으면 안된다잉 */}
                                 <img
                                     src="/images/main/logout_btn.svg"
                                     style={{ position: "relative", left: "10px", top: "100px", width: "120px"}}
@@ -90,32 +96,23 @@ const Main = () => {
                         onClick={onClickMypage}
                     />
 
-
                     {/* 담당 노인분들을 확인할 수 있는 박스들 */}
-                    <div id="boxes" style={{ marginTop: "200px", zIndex: modalOpen ? 0 : 10 }}>
-                        <div id="box" style={{ marginTop: "-300px"}}>
-                            <img
-                                src="/images/main/box.svg"
-                                style={{ position: "relative", left: "25px", height: "170px" }}
-                            />
-                            <p id="name" style={{ position: "relative", top: "-180px", left: "45px", textAlign:"left"}}> 고길동 </p>
-                            <p id="address" style={{ position: "relative", top: "-195px", left: "48px", textAlign:"left"}}> 주소 : </p>
-                            <p id="address" style={{ position: "relative", top: "-225px", left: "82px", textAlign:"left"}}> 서울시 중랑구 XX동 </p>
-                            {/* 박스 설정 바로가기 */}
-                            <img
-                                src="/images/main/sett.svg"
-                                style={{ position: "relative", top: "-300px", marginLeft: "295px", left: "25px" }}
-                                onClick={onClickSetting}
-                            />
-                            <p id="content" style={{  position: "relative", top: "-248px", left: "47px" }}>전기 및 수도 : </p>
-                            <p id="content" style={{  position: "relative", top: "-277px", left: "128px", textAlign:"left", color: "blue" }}>양호 </p>
-                            <p id="content" style={{  position: "relative", top: "-290px", left: "47px" }}>전화 통화량 : </p>
-                            <p id="content" style={{  position: "relative", top: "-319px", left: "128px", textAlign:"left", color: "red" }}>부족</p>
-                        </div>
+                    <div id="boxes" style={{ marginTop: "20px", zIndex: modalOpen ? 0 : 10 }}>
+                        {person && (
+                            <div id="box" style={{ marginTop: "20px", marginBottom: "20px" }}>
+                                <img
+                                    src="/images/main/box.svg"
+                                    style={{ position: "relative", left: "25px", height: "170px" }}
+                                />
+                                <p id="name" style={{ position: "relative", top: "-180px", left: "45px", textAlign:"left"}}>{person.name}</p>
+                                <p id="phone" style={{ position: "relative", top: "-195px", left: "48px", textAlign:"left"}}>전화번호 : {person.phoneNumber}</p>
+                                <p id="address" style={{ position: "relative", top: "-225px", left: "48px", textAlign:"left"}}>주소 : 경기도 구리시 XX동</p>
+                            </div>
+                        )}
                     </div>
 
                     {/* 담당하는 노인분 추가 */}
-                    <div id="addbox" style={{marginTop: "-300px", zIndex: modalOpen ? 0 : 10}}>
+                    <div id="addbox" style={{ marginTop: "20px", zIndex: modalOpen ? 0 : 10 }}>
                         <img
                             src="/images/main/addBox.svg"
                             style={{ position: "relative", marginTop: "20px", left: "25px", height: "170px"}}
@@ -146,55 +143,6 @@ const ContainerM = styled.div`
     max-width: 390px;
     background-color: #FFF7F0;
     overflow-x: hidden; /* 가로 및 세로 스크롤을 막기 위한 추가 */
-
-    #name {
-        font-family: 'SOYOMapleBoldTTF';
-        font-size: 25px;
-    }
-
-    #content {
-        font-family: 'SOYOMapleBoldTTF';
-        font-size: 13px;
-    }
-
-    #address {
-        font-size: 13px;
-    }
-
-    /* 모달 css */
-    .btn-wrapper {
-        display: flex;
-        justify-content: center;
-        margin-top: 5rem;
-        z-index: 0;
-    }
-    
-    .modal-open-button, .modal-close-btn {
-        cursor: pointer;
-        margin-left: auto;
-    }
-
-    .modal-container {
-        width: 100%;
-        height: 100%;
-        position: fixed;
-        top: 0;
-        left: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 1000;
-    }
-
-    .modal-content {
-        background-color: #FFF7F0;
-        width: 250px;
-        height: 360px;
-        padding: 15px;
-        border-radius: 10px;
-        z-index: 1001; 
-    }
 `;
 
 const ContainerP = styled.div`

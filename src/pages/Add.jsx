@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mobile, PC } from "../styles/Global_d"; 
@@ -7,20 +7,37 @@ import styled, { createGlobalStyle } from "styled-components";
 const Add = () => {
     const navigate = useNavigate();
     
+    const [name, setName] = useState(''); // 이름 상태
+    const [phoneNumber, setPhoneNumber] = useState(''); // 전화번호 상태
+    const [foundPerson, setFoundPerson] = useState(null); // 검색된 사람 정보 상태
+    const [modalOpen, setModalOpen] = useState(false); // 모달 상태
+    const [people, setPeople] = useState([]); // 피관리자 데이터 상태
+
+    // 목 서버에서 피관리자 데이터를 가져오는 함수
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch("http://localhost:3000/people"); // 목 서버 주소
+                const data = await response.json();
+                setPeople(data); // 피관리자 데이터 저장
+            } catch (error) {
+                console.error("데이터를 가져오는 데 오류가 발생했습니다:", error);
+            }
+        };
+        fetchData();
+    }, []);
+
+    const searchPerson = () => {
+        const found = people.find(person => person.name === name && person.phone === phoneNumber); // 이름과 전화번호로 검색
+        setFoundPerson(found);
+        setModalOpen(true); // 모달 열기
+    };
+
     const onClickMain = () => {
-        navigate("/Main");
+        if (foundPerson) {
+            navigate("/Main", { state: { person: foundPerson } }); // Main 컴포넌트에 상태 전달
+        }
     };
-
-    // 박스 선택 시 빨간 줄 테두리가 생기도록 기능함
-    const [isBoxRed, setIsBoxRed] = useState(false);
-
-    const toggleBoxImage = () => {
-        setIsBoxRed(prevState => !prevState);
-    };
-
-    // 모달창 부분
-    const [modalOpen, setModalOpen] = useState(false);
-    const modalBackground = useRef();
 
     return (
         <>
@@ -59,6 +76,8 @@ const Add = () => {
                             id="nameInput"
                             type="text"
                             placeholder="성함을 입력해주세요."
+                            value={name} // 상태 연결
+                            onChange={(e) => setName(e.target.value)} // 상태 업데이트
                         />           
         
                          {/* 전화번호  */}
@@ -71,6 +90,8 @@ const Add = () => {
                             id="phoneInput"
                             type="text"
                             placeholder="010-XXXX-XXXX 형식으로 입력해주세요."
+                            value={phoneNumber} // 상태 연결
+                            onChange={(e) => setPhoneNumber(e.target.value)} // 상태 업데이트
                         />         
 
                         {/* 찾아보기 버튼 */}
@@ -78,57 +99,37 @@ const Add = () => {
                             <img
                                 src="/images/add/s_btn.svg"
                                 style={{ position: "relative" }}
+                                onClick={searchPerson} // 버튼 클릭 시 검색 실행
                             />
                         </div>
 
-                        {/* 찾아보기 버튼을 눌렀을 경우, 정보가 있다면 뿅하고 나타나는 영역 */}
-                        <div id="found">
-                            {/* 찾는 노인분 정보가 있을 경우, 나타나는 박스 */}
-                            <div id="box" style={{ marginTop: "50px", height: "108px"}} onClick={toggleBoxImage}>
-                                <img
-                                    src={isBoxRed ? "/images/add/box_red.svg" : "/images/add/box.svg"}
-                                    style={{ position: "relative", left: "22px", height: "110px" }}
-                                />
-                                <p id="findName" style={{ position: "relative", top: "-122px", left: "45px", textAlign:"left"}}> 고길동 </p>
-                                <p id="phone" style={{ position: "relative", top: "-135px", left: "48px", textAlign:"left"}}> 010-0000-0000 </p>
-                                <p id="address" style={{ position: "relative", top: "-145px", left: "48px", textAlign:"left"}}> 주소 : </p>
-                                <p id="address" style={{ position: "relative", top: "-180.5px", left: "88px", textAlign:"left"}}> 경기도 구리시 XX동 </p>
-                            </div>
-
-                            {/* 연결 버튼 */}
-                            <div className={'btn-wrapper'} style={{ textAlign: "center", position: "relative", marginTop: "240px"}}>
-                                <img
-                                    src="/images/add/btn.svg"
-                                    style={{ top: "-210px", position: "relative" }}
-                                    className={'modal-open-btn'} 
-                                    onClick={() => setModalOpen(true)}
-                                />
-                            </div>
-                            {
-                                modalOpen &&
-                                <div className={'modal-container'} ref={modalBackground} onClick={e => {
-                                if (e.target === modalBackground.current) {
-                                    setModalOpen(false);
-                                }
-                                }}>
+                        {/* 모달창 부분 */}
+                        {
+                            modalOpen && 
+                            <div className={'modal-container'} onClick={() => setModalOpen(false)}>
                                 <div className={'modal-content'}>
-                                    <img
-                                        src="/images/add/picture.svg"
-                                        style={{ position: "relative", width: "150px", left: "43px", top: "50px"}}
-                                    />
-                                    <img
-                                        src="/images/add/write.svg"
-                                        style={{ position: "relative", left: "35px", top: "60px"}}
-                                    />
-                                    <img
-                                        src="/images/add/modal_btn.svg"
-                                        style={{ position: "relative", left: "55px", top: "120px"}}
-                                        className={'modal-close-btn'} onClick={() => setModalOpen(false)}
-                                />
+                                    {foundPerson ? (
+                                        <>
+                                            <h2>{foundPerson.name}</h2>
+                                            <p>전화번호: {foundPerson.phone}</p>
+                                            <button 
+                                                style={{ marginTop: "20px", padding: "10px 20px", borderRadius: "10px", backgroundColor: "#FFB74D", border: "none", cursor: "pointer" }}
+                                                onClick={onClickMain}
+                                            >
+                                                연결하기
+                                            </button>
+                                            <img
+                                                src="/images/add/modal_btn.svg" // 닫기 버튼 이미지
+                                                style={{ position: "absolute", bottom: "10px", right: "10px", cursor: "pointer" }} // 오른쪽 아래 위치
+                                                onClick={() => setModalOpen(false)} // 모달 닫기
+                                            />
+                                        </>
+                                    ) : (
+                                        <p>정보를 찾을 수 없습니다.</p>
+                                    )}
                                 </div>
-                                </div>
-                            }
-                        </div>
+                            </div>
+                        }
                     </ContainerM>
                 </Mobile>
                 <PC>
@@ -155,16 +156,6 @@ const ContainerM = styled.div`
     background-color: #FFF7F0;
     overflow: hidden; /* 가로 및 세로 스크롤을 막기 위한 추가 */
 
-    #name {
-        font-family: 'SOYOMapleBoldTTF';
-        font-size: 25px;
-    }
-
-    #findName {
-        font-family: 'SOYOMapleBoldTTF';
-        font-size: 20px;
-    }
-
     input {
         width: 330px;
         height: 40px; /* 높이를 키워 클릭 영역을 확실히 확보 */
@@ -182,18 +173,6 @@ const ContainerM = styled.div`
     }
 
     /* 모달 css */
-    .btn-wrapper {
-        display: flex;
-        justify-content: center;
-        margin-top: 5rem;
-        z-index: 0;
-    }
-
-    .modal-open-button, .modal-close-btn {
-        cursor: pointer;
-        margin-left: auto;
-    }
-
     .modal-container {
         width: 100%;
         height: 100%;
@@ -212,6 +191,8 @@ const ContainerM = styled.div`
         height: 360px;
         padding: 15px;
         border-radius: 10px;
+        position: relative; /* 상대 위치로 닫기 버튼 조정 */
+        text-align: center;
     }
 `;
 
