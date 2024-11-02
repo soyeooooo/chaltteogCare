@@ -74,10 +74,6 @@ const Login = () => {
                             style={{ position: "relative", top: "140px", left: "67px" }} 
                             onClick={onClickMain}
                         />
-                        <img 
-                            src="/images/login/m_k_btn.svg" 
-                            style={{ position: "relative", top: "155px", left: "67px" }}
-                        />
                     </div>
                 </ContainerM>
             </Mobile>
