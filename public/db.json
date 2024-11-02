@@ -14,7 +14,9 @@
       "name": "고길동",
       "address": "경기도 구리시 XX동",
       "electricUsage": 120,
+      "birth": "19550103",
       "waterUsage": 90,
+      "etc": "당뇨",
       "healthStatus": "양호",
       "phone": "01000000001"
     },
@@ -23,7 +25,9 @@
       "name": "이길동",
       "address": "경기도 구리시 YY동",
       "electricUsage": 100,
+      "birth": "19450112",
       "waterUsage": 80,
+      "etc": "고혈압",
       "healthStatus": "양호",
       "phone": "01000000002"
     },
@@ -32,7 +36,9 @@
       "name": "박길동",
       "address": "경기도 구리시 ZZ동",
       "electricUsage": 110,
+      "birth": "19420103",
       "waterUsage": 70,
+      "etc": "특이사항 없음",
       "healthStatus": "양호",
       "phone": "01000000003"
     },
@@ -41,9 +47,66 @@
       "name": "최길동",
       "address": "경기도 구리시 AA동",
       "electricUsage": 90,
+      "birth": "19350123",
       "waterUsage": 60,
+      "etc": "심장병",
       "healthStatus": "양호",
       "phone": "01000000004"
+    },
+    {
+      "id": "5",
+      "name": "김철수",
+      "address": "경기도 구리시 BB동",
+      "electricUsage": 95,
+      "birth": "19500215",
+      "waterUsage": 65,
+      "etc": "특이사항 없음",
+      "healthStatus": "양호",
+      "phone": "01000000005"
+    },
+    {
+      "id": "6",
+      "name": "이영희",
+      "address": "경기도 구리시 CC동",
+      "electricUsage": 85,
+      "birth": "19600130",
+      "waterUsage": 75,
+      "etc": "당뇨",
+      "healthStatus": "양호",
+      "phone": "01000000006"
+    },
+    {
+      "id": "7",
+      "name": "정민수",
+      "address": "경기도 구리시 DD동",
+      "electricUsage": 130,
+      "birth": "19551105",
+      "waterUsage": 70,
+      "etc": "심장병",
+      "healthStatus": "양호",
+      "phone": "01000000007"
+    },
+    {
+      "id": "8",
+      "name": "홍길동",
+      "address": "경기도 구리시 EE동",
+      "electricUsage": 115,
+      "birth": "19480320",
+      "waterUsage": 80,
+      "etc": "고혈압",
+      "healthStatus": "양호",
+      "phone": "01000000008"
+    },
+    {
+      "id": "9",
+      "name": "박영희",
+      "address": "경기도 구리시 FF동",
+      "electricUsage": 100,
+      "birth": "19571212",
+      "waterUsage": 90,
+      "etc": "특이사항 없음",
+      "healthStatus": "양호",
+      "phone": "01000000009"
     }
   ],
   "schedules": [

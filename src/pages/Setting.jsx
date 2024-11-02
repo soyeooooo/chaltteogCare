@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mobile, PC } from "../styles/Global_d"; 
 import styled, { createGlobalStyle } from "styled-components";
@@ -29,32 +29,58 @@ ChartJS.register(
 
 const Setting = () => {
     const navigate = useNavigate();
-    
-    const onClickMain = () => {
-        navigate("/Main");
-    };
+    const location = useLocation();
+    const personId = location.state?.personId; // 전달받은 personId
+    const [person, setPerson] = useState(null);
+    const [specialNotes, setSpecialNotes] = useState('');
+    const [randomElectricUsage, setRandomElectricUsage] = useState(0);
+    const [randomWaterUsage, setRandomWaterUsage] = useState(0);
+
+    useEffect(() => {
+        if (personId) {
+            fetch(`http://localhost:3000/people/${personId}`)
+                .then(response => response.json())
+                .then(data => {
+                    setPerson(data);
+                    // 랜덤값 생성
+                    setRandomElectricUsage(Math.floor(Math.random() * 100) + 50); // 50~150 kWh
+                    setRandomWaterUsage(Math.floor(Math.random() * 50) + 30); // 30~80 L
+                })
+                .catch((error) => {
+                    console.error('피관리자 정보 가져오기 실패:', error);
+                });
+        }
+    }, [personId]);
+
+    if (!person) {
+        return <div>로딩 중...</div>;
+    }
 
     // 차트 데이터 부분
     const data = {
         labels: ['1일', '2일', '3일', '4일', '5일', '6일', '7일', '8일', '9일', '10일', '11일', '12일'],
         datasets: [
             {
-                label: '통화량',
-                data: [2, 5, 10, 8, 9, 3, 4, 2, 1, 2, 3, 4],
+                label: '전기 사용량',
+                data: Array.from({ length: 12 }, () => Math.floor(Math.random() * 100) + 50), // 랜덤 데이터
                 borderColor: 'rgb(255, 136, 26)',
-                backgroundColor: 'rgba(0, 0, 0, 0)',
+                backgroundColor: 'rgba(255, 136, 26, 0.3)',
                 fill: true,
                 tension: 0.4,
             },
             {
-                label: '전기 및 수도',
-                data: [50, 40, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
+                label: '수도 사용량',
+                data: Array.from({ length: 12 }, () => Math.floor(Math.random() * 50) + 30), // 랜덤 데이터
                 borderColor: 'rgb(102, 51, 0)',
-                backgroundColor: 'rgba(0, 0, 0, 0)',
+                backgroundColor: 'rgba(102, 51, 0, 0.3)',
                 fill: true,
                 tension: 0.4,
             },
         ],
+    };
+
+    const onClickMain = () => {
+        navigate("/Main");
     };
 
     return (
@@ -79,31 +105,24 @@ const Setting = () => {
                             src="/images/main/logo_s.svg"
                             style={{ position: "relative", top: "10px", left: "285px" }}
                         />
-        
+
                         {/* 성함 */}
-                        <div id="name">고길동</div>
+                        <div id="name">{person.name}</div>
                         {/* 이미지 */}
-                        <div id="img" style={{marginLeft: "195px", marginTop: "40px", height: "160px", width: "160px"}}>
-                            <img src="/images/setting/pubao.jpg" style={{ height: "160px", width: "160px", borderRadius:  "15px", objectFit: "cover" }}/>
-                        </div>
                         {/* 나이 */}
-                        <div id="write" style={{marginTop: "-170px"}}>나이</div>
-                        <div id="age">87</div>
+                        <div id="write">나이</div>
+                        <div id="age">{new Date().getFullYear() - parseInt(person.birth.substring(0, 4))}세</div>
                         {/* 본인 전화번호 */}
                         <div id="write">본인 전화번호</div>
-                        <div id="my_phone">010-xxxx-xxxx</div>
-                        {/* 보호자 전화번호 */}
-                        <div id="write">보호자 전화번호</div>
-                        <div id="guardian_phone">010-xxxx-xxxx</div>
+                        <div id="my_phone">{person.phone}</div>
                         {/* 주소 */}
                         <div id="write">주소</div>
-                        <div id="address">서울시 중랑구 xx동</div>
+                        <div id="address">{person.address}</div>
                         {/* 특이사항 */}
                         <div id="write">특이 사항</div>
                         <div id="significant_box">
-                            <div id="significant">허리디스크</div>
-                            <div id="significant">당뇨</div>
-                        </div>                      
+                            <div id="significant">{person.etc}</div>
+                        </div>
 
                         {/* Line Chart 부분 */}
                         <div style={{ margin: '20px' }}>
@@ -111,11 +130,11 @@ const Setting = () => {
                         </div>
 
                         {/* 삭제 버튼 */}
-                        <div id="delete_btn" style={{position: "relative", textAlign: "center", marginTop: "30px"}}>
-                        <img
-                            src="/images/setting/delete_btn.svg"
-                            style={{ position: "relative" }}
-                        />
+                        <div id="delete_btn" style={{ position: "relative", textAlign: "center", marginTop: "30px" }}>
+                            <img
+                                src="/images/setting/delete_btn.svg"
+                                style={{ position: "relative" }}
+                            />
                         </div>
                     </ContainerM>
                 </Mobile>
